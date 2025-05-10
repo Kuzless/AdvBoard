@@ -1,6 +1,8 @@
 ﻿using AdvBoard.Application.CQRS.Announcement.Commands.AddAnnouncementCommand;
 using AdvBoard.Application.CQRS.Announcement.Commands.DeleteAnnouncementCommand;
 using AdvBoard.Application.CQRS.Announcement.Commands.UpdateAnnouncementCommand;
+using AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementByIdQuery;
+using AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementsQuery;
 using AdvBoard.Application.DTO;
 using AutoMapper;
 using MediatR;
@@ -64,6 +66,26 @@ namespace AdvBoard.Api.Controllers
                 return Ok("Announcement deleted successfully.");
             }
             return BadRequest("Failed to delete announcement.");
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAnnouncements()
+        {
+            var result = await _mediator.Send(new GetAnnouncementsQuery());
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return NotFound("Announcement not found.");
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAnnouncementById(int id)
+        {
+            var result = await _mediator.Send(new GetAnnouncementByIdQuery { Id = id });
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return NotFound("Announcement not found.");
         }
     }
 }

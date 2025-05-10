@@ -11,13 +11,23 @@ namespace AdvBoard.Api.Configuration
     {
         public AutoMappingProfile()
         {
+            // user commands
             CreateMap<AuthDTO, SignUpCommand>();
             CreateMap<SignUpCommand, User>();
-            
+
+            // announcement commands
             CreateMap<AddAnnouncementCommand, Announcement>();
             CreateMap<EditAdvDTO, AddAnnouncementCommand>();
             CreateMap<UpdateAnnouncementCommand, Announcement>();
             CreateMap<EditAdvDTO, UpdateAnnouncementCommand>();
+
+            // announcement queries
+            CreateMap<Announcement, AdvDTO>()
+                .ForMember(dest => dest.SubCategory, opt => opt.MapFrom(src => src.SubCategory.Name))
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.SubCategory.Category.Name))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.Name))
+                .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.User.UserName))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")));
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using AdvBoard.Domain.Interfaces;
-
 namespace AdvBoard.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T: class

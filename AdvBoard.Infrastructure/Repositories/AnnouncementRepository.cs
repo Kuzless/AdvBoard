@@ -1,5 +1,6 @@
 ﻿using AdvBoard.Domain.Entities;
 using AdvBoard.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace AdvBoard.Infrastructure.Repositories
 {
@@ -10,8 +11,20 @@ namespace AdvBoard.Infrastructure.Repositories
 
         public async Task<Announcement> GetByIdAsync(int id)
         {
-            var adv = await _context.Set<Announcement>().FindAsync(id);
-            return adv!;
+            return await _context.Set<Announcement>()
+                .Include(a => a.SubCategory)
+                .ThenInclude(s => s.Category)
+                .Include(a => a.User)
+                .Include(a => a.Status)
+                .FirstAsync(a => a.Id == id);
+        }
+        public async Task<List<Announcement>> GetAnnouncementsPageAsync()
+        {
+            return await _context.Set<Announcement>()
+                .Include(a => a.SubCategory)
+                .ThenInclude(s => s.Category)
+                .Include(a => a.User)
+                .Include(a => a.Status).ToListAsync();
         }
     }
 }

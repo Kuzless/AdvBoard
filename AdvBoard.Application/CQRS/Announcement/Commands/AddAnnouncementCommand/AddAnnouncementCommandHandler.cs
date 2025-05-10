@@ -16,7 +16,7 @@ namespace AdvBoard.Application.CQRS.Announcement.Commands.AddAnnouncementCommand
         public async Task<bool> Handle(AddAnnouncementCommand request, CancellationToken cancellationToken)
         {
             var adv = _mapper.Map<Domain.Entities.Announcement>(request);
-            adv.CreatedAt = DateTime.UtcNow;
+            adv.CreatedAt = DateTime.Now;
             adv.StatusId = 1;
             await _unitOfWork.AnnouncementRepository.AddAsync(adv);
             await _unitOfWork.SaveAsync();
