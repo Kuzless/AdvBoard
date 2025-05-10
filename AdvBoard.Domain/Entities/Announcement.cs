@@ -8,7 +8,7 @@
         public DateTime CreatedAt { get; set; }
         public int StatusId { get; set; }
         public Status Status { get; set; }
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
         public User User { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; }

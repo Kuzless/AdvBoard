@@ -18,6 +18,7 @@ namespace AdvBoard.Infrastructure
             builder.Entity<User>().Ignore(f => f.PhoneNumberConfirmed);
             builder.Entity<User>().Ignore(f => f.TwoFactorEnabled);
             builder.Entity<User>().Ignore(f => f.LockoutEnabled);
+            builder.Entity<User>().Ignore(f => f.LockoutEnd);
             builder.Entity<User>().Ignore(f => f.AccessFailedCount);
             builder.Entity<User>().Ignore(f => f.EmailConfirmed);
             builder.Entity<User>().Ignore(f => f.PasswordHash);

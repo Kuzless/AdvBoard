@@ -1,5 +1,7 @@
-﻿using AdvBoard.Domain.Interfaces;
+﻿using AdvBoard.Domain.Entities;
+using AdvBoard.Domain.Interfaces;
 using AdvBoard.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Identity;
 
 namespace AdvBoard.Infrastructure
 {
@@ -10,15 +12,17 @@ namespace AdvBoard.Infrastructure
 
         public IAnnouncementRepository AnnouncementRepository { get; private set; }
         public IUserRepository UserRepository { get; private set; }
-        public UnitOfWork(DatabaseContext context)
+        public UserManager<User> UserManager { get; private set; }
+        public UnitOfWork(DatabaseContext context, UserManager<User> userManager)
         {
             _context = context;
             AnnouncementRepository = new AnnouncementRepository(_context);
             UserRepository = new UserRepository(_context);
+            UserManager = userManager;
         }
-        public async Task SaveAsync()
+        public async Task<int> SaveAsync()
         {
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
 
         protected virtual void Dispose(bool disposing)

@@ -12,12 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CQRS\" />
-    <Folder Include="DTO\" />
+    <Folder Include="CQRS\Announcement\Commands\" />
+    <Folder Include="CQRS\Announcement\Queries\" />
+    <Folder Include="CQRS\User\Queries\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="MediatR" Version="12.5.0" />
   </ItemGroup>
 
