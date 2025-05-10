@@ -1,4 +1,5 @@
 ﻿using AdvBoard.Application.CQRS.Announcement.Commands.AddAnnouncementCommand;
+using AdvBoard.Application.CQRS.Announcement.Commands.DeleteAnnouncementCommand;
 using AdvBoard.Application.CQRS.Announcement.Commands.UpdateAnnouncementCommand;
 using AdvBoard.Application.DTO;
 using AutoMapper;
@@ -51,6 +52,18 @@ namespace AdvBoard.Api.Controllers
                 return Ok("Announcement updated successfully.");
             }
             return BadRequest("Failed to update announcement.");
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAnnouncement(int id)
+        {
+            var command = new DeleteAnnouncementCommand { Id = id };
+            command.UserId = "4fefeb42-3fae-4aa0-bbcb-e23d5d70a9da"; // TEMP
+            var result = await _mediator.Send(command);
+            if (result)
+            {
+                return Ok("Announcement deleted successfully.");
+            }
+            return BadRequest("Failed to delete announcement.");
         }
     }
 }

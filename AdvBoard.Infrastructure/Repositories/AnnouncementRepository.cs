@@ -10,7 +10,7 @@ namespace AdvBoard.Infrastructure.Repositories
 
         public async Task<Announcement> GetByIdAsync(int id)
         {
-            var adv = await _context.FindAsync<Announcement>(id);
+            var adv = await _context.Set<Announcement>().FindAsync(id);
             return adv!;
         }
     }
