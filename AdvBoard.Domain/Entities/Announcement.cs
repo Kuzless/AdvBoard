@@ -10,7 +10,7 @@
         public Status Status { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public int SubCategoryId { get; set; }
+        public SubCategory SubCategory { get; set; }
     }
 }

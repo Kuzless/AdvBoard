@@ -4,6 +4,7 @@ using AdvBoard.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvBoard.Infrastructure.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250510112731_Seed")]
+    partial class Seed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,6 +33,9 @@ namespace AdvBoard.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -38,9 +44,6 @@ namespace AdvBoard.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StatusId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubCategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -53,9 +56,9 @@ namespace AdvBoard.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex("SubCategoryId");
+                    b.HasIndex("StatusId");
 
                     b.HasIndex("UserId");
 
@@ -438,15 +441,15 @@ namespace AdvBoard.Infrastructure.Migrations
 
             modelBuilder.Entity("AdvBoard.Domain.Entities.Announcement", b =>
                 {
-                    b.HasOne("AdvBoard.Domain.Entities.Status", "Status")
-                        .WithMany("Announcements")
-                        .HasForeignKey("StatusId")
+                    b.HasOne("AdvBoard.Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AdvBoard.Domain.Entities.SubCategory", "SubCategory")
+                    b.HasOne("AdvBoard.Domain.Entities.Status", "Status")
                         .WithMany("Announcements")
-                        .HasForeignKey("SubCategoryId")
+                        .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -456,9 +459,9 @@ namespace AdvBoard.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Status");
+                    b.Navigation("Category");
 
-                    b.Navigation("SubCategory");
+                    b.Navigation("Status");
 
                     b.Navigation("User");
                 });
@@ -531,11 +534,6 @@ namespace AdvBoard.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("AdvBoard.Domain.Entities.Status", b =>
-                {
-                    b.Navigation("Announcements");
-                });
-
-            modelBuilder.Entity("AdvBoard.Domain.Entities.SubCategory", b =>
                 {
                     b.Navigation("Announcements");
                 });

@@ -1,13 +1,11 @@
-﻿using AdvBoard.Domain.Interfaces;
+﻿using AdvBoard.Domain.Entities;
+using AdvBoard.Domain.Interfaces;
 
 namespace AdvBoard.Infrastructure.Repositories
 {
-    public class AnnouncementRepository : IAnnouncementRepository
+    public class AnnouncementRepository : GenericRepository<Announcement>, IAnnouncementRepository
     {
-        private readonly DatabaseContext _context;
-        public AnnouncementRepository(DatabaseContext context)
-        {
-            _context = context;
-        }
+        
+        public AnnouncementRepository(DatabaseContext context) : base(context){}
     }
 }

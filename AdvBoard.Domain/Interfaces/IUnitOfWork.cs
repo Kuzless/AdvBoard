@@ -7,7 +7,7 @@ namespace AdvBoard.Domain.Interfaces
     {
         Task<int> SaveAsync();
         IAnnouncementRepository AnnouncementRepository { get; }
-        IUserRepository UserRepository { get; }
+        ISubCategoryRepository SubCategoryRepository { get; }
         UserManager<User> UserManager { get; }
     }
 }

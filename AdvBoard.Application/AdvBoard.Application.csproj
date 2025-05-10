@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CQRS\Announcement\Commands\" />
     <Folder Include="CQRS\Announcement\Queries\" />
     <Folder Include="CQRS\User\Queries\" />
     <Folder Include="Services\" />

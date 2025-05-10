@@ -20,7 +20,7 @@ namespace AdvBoard.Api.Controllers
         }
 
         [HttpPost("SignUp")]
-        public async Task<IActionResult> SignUp([FromBody] UserDTO user)
+        public async Task<IActionResult> SignUp([FromBody] AuthDTO user)
         {
             if (!ModelState.IsValid)
             {

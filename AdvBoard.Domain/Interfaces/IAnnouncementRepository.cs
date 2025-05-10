@@ -1,6 +1,8 @@
-﻿namespace AdvBoard.Domain.Interfaces
+﻿using AdvBoard.Domain.Entities;
+
+namespace AdvBoard.Domain.Interfaces
 {
-    public interface IAnnouncementRepository
+    public interface IAnnouncementRepository : IGenericRepository<Announcement>
     {
     }
 }
