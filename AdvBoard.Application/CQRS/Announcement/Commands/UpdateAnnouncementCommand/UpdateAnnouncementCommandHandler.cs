@@ -15,9 +15,14 @@ namespace AdvBoard.Application.CQRS.Announcement.Commands.UpdateAnnouncementComm
         }
         public async Task<bool> Handle(UpdateAnnouncementCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.AnnouncementRepository.Update(_mapper.Map<Domain.Entities.Announcement>(request));
-            await _unitOfWork.SaveAsync();
-            return true;
+            var announcement = await _unitOfWork.AnnouncementRepository.GetByIdAsync(request.Id);
+            if (announcement.UserId == request.UserId)
+            {
+                await _unitOfWork.AnnouncementRepository.Update(_mapper.Map<Domain.Entities.Announcement>(request));
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            return false;
         }
     }
 }

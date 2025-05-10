@@ -44,7 +44,7 @@ namespace AdvBoard.Api.Controllers
             }
             var command = _mapper.Map<UpdateAnnouncementCommand>(adv);
             command.Id = id;
-            command.UserId = "e0f85046-10ea-45f7-a323-d15c67b79b9a"; // TEMP
+            command.UserId = "4fefeb42-3fae-4aa0-bbcb-e23d5d70a9da"; // TEMP
             var result = await _mediator.Send(command);
             if (result)
             {

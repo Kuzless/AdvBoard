@@ -7,5 +7,11 @@ namespace AdvBoard.Infrastructure.Repositories
     {
         
         public AnnouncementRepository(DatabaseContext context) : base(context){}
+
+        public async Task<Announcement> GetByIdAsync(int id)
+        {
+            var adv = await _context.FindAsync<Announcement>(id);
+            return adv!;
+        }
     }
 }
