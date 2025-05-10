@@ -14,5 +14,11 @@ namespace AdvBoard.Infrastructure.Repositories
         {
             await _context.Set<T>().AddAsync(entity);
         }
+
+        public Task Update(T entity)
+        {
+            _context.Set<T>().Update(entity);
+            return Task.CompletedTask;
+        }
     }
 }

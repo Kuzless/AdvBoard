@@ -55,5 +55,14 @@ namespace AdvBoard.Infrastructure
                 new Status { Id = 2, Name = "Неактивне" }
             );
         }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            foreach (var entity in ChangeTracker.Entries<Announcement>())
+            {
+                entity.Property("CreatedAt").IsModified = false;
+            }
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
     }
 }

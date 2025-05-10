@@ -1,4 +1,5 @@
 ﻿using AdvBoard.Application.CQRS.Announcement.Commands.AddAnnouncementCommand;
+using AdvBoard.Application.CQRS.Announcement.Commands.UpdateAnnouncementCommand;
 using AdvBoard.Application.DTO;
 using AutoMapper;
 using MediatR;
@@ -19,7 +20,7 @@ namespace AdvBoard.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAnnouncement([FromBody] NewAdvDTO adv)
+        public async Task<IActionResult> AddAnnouncement([FromBody] EditAdvDTO adv)
         {
             if (adv == null)
             {
@@ -33,6 +34,23 @@ namespace AdvBoard.Api.Controllers
                 return Ok("Announcement added successfully.");
             }
             return BadRequest("Failed to add announcement.");
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAnnouncement(int id, [FromBody] EditAdvDTO adv)
+        {
+            if (adv == null)
+            {
+                return BadRequest("Invalid announcement data.");
+            }
+            var command = _mapper.Map<UpdateAnnouncementCommand>(adv);
+            command.Id = id;
+            command.UserId = "e0f85046-10ea-45f7-a323-d15c67b79b9a"; // TEMP
+            var result = await _mediator.Send(command);
+            if (result)
+            {
+                return Ok("Announcement updated successfully.");
+            }
+            return BadRequest("Failed to update announcement.");
         }
     }
 }
