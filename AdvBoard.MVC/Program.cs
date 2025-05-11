@@ -1,3 +1,5 @@
+using AdvBoard.MVC.Services;
+
 namespace AdvBoard.MVC
 {
     public class Program
@@ -8,6 +10,12 @@ namespace AdvBoard.MVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddHttpClient("HttpClient", client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["APIUrl"]!);
+            });
+            builder.Services.AddScoped<AnnouncementHttpService>();
 
             var app = builder.Build();
 

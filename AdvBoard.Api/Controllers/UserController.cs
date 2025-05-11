@@ -2,7 +2,6 @@
 using AdvBoard.Application.DTO;
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdvBoard.Api.Controllers

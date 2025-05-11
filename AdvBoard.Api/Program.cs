@@ -4,6 +4,8 @@ using AdvBoard.Domain.Entities;
 using AdvBoard.Domain.Interfaces;
 using AdvBoard.Infrastructure;
 using AdvBoard.Infrastructure.Configuration;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +22,15 @@ namespace AdvBoard.Api
             builder.Services.AddControllers();
 
             // connection strings
+            if (builder.Environment.IsProduction())
+            {
+                var keyvault = new SecretClient(
+                    new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"),
+                    new DefaultAzureCredential());
+                builder.Services.AddDbContext<DatabaseContext>(options =>
+                    options.UseSqlServer(keyvault.GetSecret("DatabaseConStr").Value.Value.ToString()));
+            }
+            else
             if (builder.Environment.IsDevelopment())
             {
                 builder.Services.AddDbContext<DatabaseContext>(options =>

@@ -1,0 +1,19 @@
+﻿@model List<AdvBoard.MVC.Models.AnnouncementModel>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@foreach (var adv in Model)
+{
+    <h3>@adv.Id</h3>
+	<h3>@adv.Title</h3>
+    <h3>@adv.Description</h3>
+	<h3>@adv.CreatedAt</h3>
+	<h3>@adv.Status</h3>
+	<h3>@adv.Owner</h3>
+	<h3>@adv.Category</h3>
+	<h3>@adv.SubCategory</h3>
+}
