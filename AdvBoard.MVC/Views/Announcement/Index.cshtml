@@ -8,12 +8,18 @@
 
 @foreach (var adv in Model)
 {
-    <h3>@adv.Id</h3>
-	<h3>@adv.Title</h3>
-    <h3>@adv.Description</h3>
-	<h3>@adv.CreatedAt</h3>
-	<h3>@adv.Status</h3>
-	<h3>@adv.Owner</h3>
-	<h3>@adv.Category</h3>
-	<h3>@adv.SubCategory</h3>
+	<div class="d-flex flex-wrap gap-3">
+		<div class="flex-fill p-3 border rounded bg-light" style="min-width: 300px; max-width: 48%;">
+			<h6 class="fw-bold">@adv.Title @adv.Id </h6>
+			<p class="mb-0">@adv.Id</p>
+			<p class="mb-0">@adv.Id</p>
+			<p class="mb-0">@adv.Title</p>
+			<p class="mb-0">@adv.Description</p>
+			<p class="mb-0">@adv.CreatedAt</p>
+			<p class="mb-0">@adv.Status</p>
+			<p class="mb-0">@adv.Owner</p>
+			<p class="mb-0">@adv.Category</p>
+			<p class="mb-0">@adv.SubCategory</p>
+		</div>
+	</div>
 }

@@ -18,7 +18,7 @@ namespace AdvBoard.Application.CQRS.Announcement.Commands.UpdateAnnouncementComm
             var announcement = await _unitOfWork.AnnouncementRepository.GetByIdAsync(request.Id);
             if (announcement.UserId == request.UserId)
             {
-                await _unitOfWork.AnnouncementRepository.Update(_mapper.Map<Domain.Entities.Announcement>(request));
+                _mapper.Map(request, announcement);
                 await _unitOfWork.SaveAsync();
                 return true;
             }

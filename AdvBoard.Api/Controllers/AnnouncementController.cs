@@ -30,7 +30,7 @@ namespace AdvBoard.Api.Controllers
                 return BadRequest("Invalid announcement data.");
             }
             var command = _mapper.Map<AddAnnouncementCommand>(adv);
-            command.UserId = "e0f85046-10ea-45f7-a323-d15c67b79b9a"; // TEMP
+            command.UserId = "364d360b-6ad3-44f4-8ebc-df445acc4a53"; // TEMP
             var result = await _mediator.Send(command);
             if (result)
             {
@@ -47,7 +47,7 @@ namespace AdvBoard.Api.Controllers
             }
             var command = _mapper.Map<UpdateAnnouncementCommand>(adv);
             command.Id = id;
-            command.UserId = "4fefeb42-3fae-4aa0-bbcb-e23d5d70a9da"; // TEMP
+            command.UserId = "364d360b-6ad3-44f4-8ebc-df445acc4a53"; // TEMP
             var result = await _mediator.Send(command);
             if (result)
             {
@@ -59,7 +59,7 @@ namespace AdvBoard.Api.Controllers
         public async Task<IActionResult> DeleteAnnouncement(int id)
         {
             var command = new DeleteAnnouncementCommand { Id = id };
-            command.UserId = "4fefeb42-3fae-4aa0-bbcb-e23d5d70a9da"; // TEMP
+            command.UserId = "364d360b-6ad3-44f4-8ebc-df445acc4a53"; // TEMP
             var result = await _mediator.Send(command);
             if (result)
             {

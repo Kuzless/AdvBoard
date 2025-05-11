@@ -19,11 +19,5 @@ namespace AdvBoard.Infrastructure.Repositories
             _context.Set<T>().Remove(entity);
             return Task.CompletedTask;
         }
-
-        public Task Update(T entity)
-        {
-            _context.Set<T>().Update(entity);
-            return Task.CompletedTask;
-        }
     }
 }
