@@ -26,7 +26,7 @@ namespace AdvBoard.Api.Configuration
                 .ForMember(dest => dest.SubCategory, opt => opt.MapFrom(src => src.SubCategory.Name))
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.SubCategory.Category.Name))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.Name))
-                .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.User.UserName))
+                .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.User.Name))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")));
             CreateMap<Announcement, EditAdvInfoDTO>()
                 .ForMember(dest => dest.SubCategoryId, opt => opt.MapFrom(src => src.SubCategory.Id))

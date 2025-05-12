@@ -1,17 +1,12 @@
 using AdvBoard.Api.Configuration;
 using AdvBoard.Application.CQRS.User.Commands.SignUpCommand;
+using AdvBoard.Application.Interfaces;
+using AdvBoard.Application.Services;
 using AdvBoard.Domain.Entities;
 using AdvBoard.Domain.Interfaces;
 using AdvBoard.Infrastructure;
 using AdvBoard.Infrastructure.Configuration;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace AdvBoard.Api
 {
@@ -25,41 +20,8 @@ namespace AdvBoard.Api
 
             builder.Services.AddControllers();
 
-            if (builder.Environment.IsProduction())
-            {
-                var keyvault = new SecretClient(
-                    new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"),
-                    new DefaultAzureCredential());
-                builder.Services.AddDbContext<DatabaseContext>(options =>
-                    options.UseSqlServer(keyvault.GetSecret("DatabaseConStr").Value.Value.ToString()));
-                builder.Services.AddAuthentication(opt =>
-                {
-                    opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    opt.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-                }).AddCookie()
-                .AddGoogle(GoogleDefaults.AuthenticationScheme, opt =>
-                {
-                    opt.ClientId = keyvault.GetSecret("GoogleClientId").Value.Value.ToString();
-                    opt.ClientSecret = keyvault.GetSecret("GoogleClientSecret").Value.Value.ToString();
-                });
-            }
-            else
-            if (builder.Environment.IsDevelopment())
-            {
-                builder.Services.AddDbContext<DatabaseContext>(options =>
-                    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-                builder.Services.AddAuthentication(opt =>
-                {
-                    opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    opt.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-                }).AddCookie()
-                .AddGoogle(GoogleDefaults.AuthenticationScheme, opt =>
-                {
-                    opt.ClientId = builder.Configuration["GoogleKeys:ClientId"];
-                    opt.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
-                });
-            }
-            builder.Services.AddAuthorization();
+            ConnectionConfiguration.ConfigureAuth(builder);
+            ConnectionConfiguration.ConfigureDbConnection(builder);
 
             // identity
             builder.Services.AddScoped<IUserStore<User>, CustomUserStore>();
@@ -71,6 +33,7 @@ namespace AdvBoard.Api
 
             // services
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddAutoMapper(typeof(AutoMappingProfile));
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(SignUpCommand).Assembly));   
 

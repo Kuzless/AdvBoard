@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using AdvBoard.Infrastructure;
 using AdvBoard.Domain.Entities;
+using AdvBoard.Application.Interfaces;
 
 namespace AdvBoard.Api.Controllers
 {
@@ -13,12 +14,10 @@ namespace AdvBoard.Api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
-        public AuthController(IMediator mediator, IMapper mapper)
+        private readonly IAuthService _authService;
+        public AuthController(IAuthService authService)
         {
-            _mapper = mapper;
-            _mediator = mediator;
+            _authService = authService;
         }
 
         [HttpGet("google-login")]
@@ -35,24 +34,8 @@ namespace AdvBoard.Api.Controllers
         public async Task<IActionResult> Callback()
         {
             var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
-            var claims = result.Principal?.Identities.FirstOrDefault()?.Claims;
-
-            var email = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-            var name = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-
-            if (email == null)
-                return BadRequest("No email found from Google.");
-
-            var db = HttpContext.RequestServices.GetService<DatabaseContext>();
-            var existingUser = db.Users.FirstOrDefault(u => u.Email == email);
-
-            if (existingUser == null)
-            {
-                db.Users.Add(new User { Email = email, UserName = email });
-                await db.SaveChangesAsync();
-            }
-
-            return Redirect("https://localhost:7145/oauth-success");
+            var token = await _authService.Authenticate(result);
+            return Ok(token);
         }
     }
 }
