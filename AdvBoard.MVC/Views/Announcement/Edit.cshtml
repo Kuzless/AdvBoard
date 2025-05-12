@@ -2,9 +2,33 @@
 @model AnnouncementEditViewModel
 
 <form class="form-control">
-	<input class="form-text" value="@Model.Title"/>
-	<input class="form-text" value="@Model.Description" />
-	<p class="mb-0">@Model.Statuses</p>
-	<p class="mb-0">@Model.Categories</p>
-	<p class="mb-0">@Model.SubCategories</p>
+	<h4 class="form-label">Назва оголошення:</h4>
+	<input class="input-group" value="@Model.Title"/>
+	<h4 class="form-label">Опис оголошення:</h4>
+	<input class="input-group" value="@Model.Description" />
+	<h4 class="form-label">Статус оголошення:</h4>
+	<select class="form-select mb-3" asp-for="StatusId">
+		@foreach (var status in Model.Statuses)
+		{
+			<option value="@status.Id">@status.Name</option>
+		}
+	</select>
+	<h4 class="form-label">Категорія:</h4>
+	<select class="form-select mb-3" asp-for="CategoryId" onchange="popSubCategories()">
+		@foreach (var category in Model.Categories)
+		{
+			<option value="@category.Id">@category.Name</option>
+		}
+	</select>
+	<h4 class="form-label">Підкатегорія:</h4>
+	<select class="form-select mb-3" asp-for="SubCategoryId">
+		@foreach (var sub in Model.SubCategories)
+		{
+			<option value="@sub.Id">@sub.Name</option>
+		}
+	</select>
+	<input type="hidden" id="SubCategoryData" value='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SubCategories))' />
 </form>
+
+<script src="/js/cascading-dropdown.js"></script>
+
