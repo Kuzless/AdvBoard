@@ -1,4 +1,5 @@
 ﻿using AdvBoard.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 namespace AdvBoard.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T: class
@@ -18,6 +19,11 @@ namespace AdvBoard.Infrastructure.Repositories
         {
             _context.Set<T>().Remove(entity);
             return Task.CompletedTask;
+        }
+
+        public async Task<List<T>> GetAllAsync()
+        {
+            return await _context.Set<T>().ToListAsync();
         }
     }
 }

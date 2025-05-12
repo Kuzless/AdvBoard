@@ -1,6 +1,6 @@
 ﻿namespace AdvBoard.Application.DTO
 {
-    public class EditAdvDTO
+    public class UpdAdvDTO
     {
         public string Title { get; set; }
         public string Description { get; set; }

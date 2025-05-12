@@ -2,6 +2,7 @@
 using AdvBoard.Application.CQRS.Announcement.Commands.DeleteAnnouncementCommand;
 using AdvBoard.Application.CQRS.Announcement.Commands.UpdateAnnouncementCommand;
 using AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementByIdQuery;
+using AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementByUserIdQuery;
 using AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementsQuery;
 using AdvBoard.Application.DTO;
 using AutoMapper;
@@ -23,7 +24,7 @@ namespace AdvBoard.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAnnouncement([FromBody] EditAdvDTO adv)
+        public async Task<IActionResult> AddAnnouncement([FromBody] UpdAdvDTO adv)
         {
             if (adv == null)
             {
@@ -39,7 +40,7 @@ namespace AdvBoard.Api.Controllers
             return BadRequest("Failed to add announcement.");
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAnnouncement(int id, [FromBody] EditAdvDTO adv)
+        public async Task<IActionResult> UpdateAnnouncement(int id, [FromBody] UpdAdvDTO adv)
         {
             if (adv == null)
             {
@@ -78,9 +79,21 @@ namespace AdvBoard.Api.Controllers
             return NotFound("Announcement not found.");
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAnnouncementById(int id)
+        public async Task<IActionResult> GetAnnouncementEditById(int id)
         {
-            var result = await _mediator.Send(new GetAnnouncementByIdQuery { Id = id });
+            var result = await _mediator.Send(new GetAnnouncementEditByIdQuery { Id = id });
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return NotFound("Announcement not found.");
+        }
+        [HttpGet("user/announcements/")]
+        public async Task<IActionResult> GetAnnouncementByUserId()
+        {
+            var query = new GetAnnouncementByUserIdQuery();
+            query.UserId = "364d360b-6ad3-44f4-8ebc-df445acc4a53"; // TEMP
+            var result = await _mediator.Send(query);
             if (result != null)
             {
                 return Ok(result);

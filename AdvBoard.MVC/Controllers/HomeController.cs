@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using AdvBoard.MVC.Models;
+using AdvBoard.MVC.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdvBoard.MVC.Controllers

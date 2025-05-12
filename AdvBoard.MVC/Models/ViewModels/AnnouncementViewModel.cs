@@ -1,6 +1,6 @@
-﻿namespace AdvBoard.MVC.Models
+﻿namespace AdvBoard.MVC.Models.ViewModels
 {
-    public class AnnouncementModel
+    public class AnnouncementViewModel
     {
         public int Id { get; set; }
         public string Title { get; set; }

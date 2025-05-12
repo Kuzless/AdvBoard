@@ -1,4 +1,4 @@
-namespace AdvBoard.MVC.Models
+namespace AdvBoard.MVC.Models.ViewModels
 {
     public class ErrorViewModel
     {

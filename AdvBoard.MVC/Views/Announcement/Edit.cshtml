@@ -1,0 +1,10 @@
+﻿@using AdvBoard.MVC.Models.ViewModels
+@model AnnouncementEditViewModel
+
+<form class="form-control">
+	<input class="form-text" value="@Model.Title"/>
+	<input class="form-text" value="@Model.Description" />
+	<p class="mb-0">@Model.Statuses</p>
+	<p class="mb-0">@Model.Categories</p>
+	<p class="mb-0">@Model.SubCategories</p>
+</form>

@@ -6,5 +6,6 @@ namespace AdvBoard.Domain.Interfaces
     {
         Task<Announcement> GetByIdAsync(int id);
         Task<List<Announcement>> GetAnnouncementsPageAsync();
+        Task<List<Announcement>> GetAnnouncementsByUserIdAsync(string userId);
     }
 }

@@ -15,5 +15,18 @@ namespace AdvBoard.MVC.Controllers
             var announcements = await _announcementHttpService.GetAnnouncementsAsync();
             return View(announcements);
         }
+
+        public async Task<IActionResult> UserAnnouncements()
+        {
+            var announcements = await _announcementHttpService.GetAnnouncementsByUserIdAsync();
+            return View(announcements);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var announcement = await _announcementHttpService.GetAnnouncementEditByIdAsync(id);
+            return View(announcement);
+        }
     }
 }
