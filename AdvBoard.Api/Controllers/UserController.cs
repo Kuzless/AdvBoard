@@ -35,5 +35,23 @@ namespace AdvBoard.Api.Controllers
                 return BadRequest("User creation failed");
             }
         }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] AuthDTO user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _mediator.Send(_mapper.Map<SignUpCommand>(user));
+            if (result)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("User creation failed");
+            }
+        }
     }
 }
