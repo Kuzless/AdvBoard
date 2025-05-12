@@ -1,6 +1,5 @@
 ﻿using AdvBoard.Application.CQRS.Announcement.Commands.AddAnnouncementCommand;
 using AdvBoard.Application.CQRS.Announcement.Commands.UpdateAnnouncementCommand;
-using AdvBoard.Application.CQRS.User.Commands.SignUpCommand;
 using AdvBoard.Application.DTO;
 using AdvBoard.Domain.Entities;
 using AutoMapper;
@@ -11,10 +10,6 @@ namespace AdvBoard.Api.Configuration
     {
         public AutoMappingProfile()
         {
-            // user commands
-            CreateMap<AuthDTO, SignUpCommand>();
-            CreateMap<SignUpCommand, User>();
-
             // announcement commands
             CreateMap<AddAnnouncementCommand, Announcement>();
             CreateMap<UpdAdvDTO, AddAnnouncementCommand>();

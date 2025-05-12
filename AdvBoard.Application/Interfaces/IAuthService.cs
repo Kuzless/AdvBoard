@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using AdvBoard.Application.DTO;
+using Microsoft.AspNetCore.Authentication;
 
 namespace AdvBoard.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<string> Authenticate(AuthenticateResult authResult);
+        Task<TokenDTO> Authenticate(AuthenticateResult authResult);
     }
 }

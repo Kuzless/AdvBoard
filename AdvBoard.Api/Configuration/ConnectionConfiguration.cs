@@ -54,7 +54,12 @@ namespace AdvBoard.Api.Configuration
                    opt.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
                }
            });
-            builder.Services.AddAuthorization();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GoogleAuthenticated", policy =>
+                    policy.RequireAuthenticatedUser()
+                          .AddAuthenticationSchemes(GoogleDefaults.AuthenticationScheme));
+            });
         }
         
         public static void ConfigureDbConnection(WebApplicationBuilder builder)

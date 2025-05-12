@@ -1,4 +1,5 @@
-﻿using AdvBoard.Application.CQRS.Announcement.Commands.AddAnnouncementCommand;
+﻿using System.Security.Claims;
+using AdvBoard.Application.CQRS.Announcement.Commands.AddAnnouncementCommand;
 using AdvBoard.Application.CQRS.Announcement.Commands.DeleteAnnouncementCommand;
 using AdvBoard.Application.CQRS.Announcement.Commands.UpdateAnnouncementCommand;
 using AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementByIdQuery;
@@ -7,10 +8,13 @@ using AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementsQuery;
 using AdvBoard.Application.DTO;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdvBoard.Api.Controllers
 {
+    [Authorize(AuthenticationSchemes = GoogleDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class AnnouncementController : ControllerBase
@@ -30,8 +34,9 @@ namespace AdvBoard.Api.Controllers
             {
                 return BadRequest("Invalid announcement data.");
             }
+            
             var command = _mapper.Map<AddAnnouncementCommand>(adv);
-            command.UserId = "364d360b-6ad3-44f4-8ebc-df445acc4a53"; // TEMP
+            command.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
             var result = await _mediator.Send(command);
             if (result)
             {
@@ -48,7 +53,7 @@ namespace AdvBoard.Api.Controllers
             }
             var command = _mapper.Map<UpdateAnnouncementCommand>(adv);
             command.Id = id;
-            command.UserId = "364d360b-6ad3-44f4-8ebc-df445acc4a53"; // TEMP
+            command.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
             var result = await _mediator.Send(command);
             if (result)
             {
@@ -60,7 +65,7 @@ namespace AdvBoard.Api.Controllers
         public async Task<IActionResult> DeleteAnnouncement(int id)
         {
             var command = new DeleteAnnouncementCommand { Id = id };
-            command.UserId = "364d360b-6ad3-44f4-8ebc-df445acc4a53"; // TEMP
+            command.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
             var result = await _mediator.Send(command);
             if (result)
             {
@@ -92,7 +97,7 @@ namespace AdvBoard.Api.Controllers
         public async Task<IActionResult> GetAnnouncementByUserId()
         {
             var query = new GetAnnouncementByUserIdQuery();
-            query.UserId = "364d360b-6ad3-44f4-8ebc-df445acc4a53"; // TEMP
+            query.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
             var result = await _mediator.Send(query);
             if (result != null)
             {
