@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using AdvBoard.Application.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using MediatR;
+using AutoMapper;
+using AdvBoard.Application.DTO.CommandDTOs;
+using AdvBoard.Application.CQRS.User.Commands;
 
 namespace AdvBoard.Api.Controllers
 {
@@ -9,30 +10,25 @@ namespace AdvBoard.Api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
-        private readonly IConfiguration _configuration;
-        public AuthController(IAuthService authService, IConfiguration configuration)
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
+        public AuthController(IMediator mediator, IMapper mapper)
         {
-            _authService = authService;
-            _configuration = configuration;
+            _mediator = mediator;
+            _mapper = mapper;
         }
 
-        [HttpGet("google-login")]
-        public IActionResult Login()
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody] UserDTO user)
         {
-            var properties = new AuthenticationProperties()
+            if (user == null)
             {
-                RedirectUri = Url.Action("Callback")
-            };
-            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
-        }
+                return UnprocessableEntity("Invalid data.");
+            }
 
-        [HttpGet("google-callback")]
-        public async Task<IActionResult> Callback()
-        {
-            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
-            var token = await _authService.Authenticate(result);
-            return Redirect($"{_configuration["FrontendUrl"]}/Auth/Callback?token={token}");
+            var command = _mapper.Map<AuthorizeUserGenerateTokenCommand>(user);
+            var token = await _mediator.Send(command);
+            return Ok(token);
         }
     }
 }

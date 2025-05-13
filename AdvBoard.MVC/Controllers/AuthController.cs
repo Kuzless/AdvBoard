@@ -1,37 +1,46 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using AdvBoard.MVC.Services.Static;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using AdvBoard.MVC.Services;
 
 namespace AdvBoard.MVC.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
-        public AuthController(HttpClient httpClient, IConfiguration configuration)
+        private readonly AuthService _authService;
+        public AuthController(AuthService authService)
         {
-            _httpClient = httpClient;
-            _configuration = configuration;
-        }
-        public IActionResult Index()
-        {
-            return Redirect($"{_configuration["APIUrl"]}/api/Auth/google-login");
-        }
-        public IActionResult Logout()
-        {
-            AuthService.Logout(HttpContext, _httpClient);
-            return RedirectToAction("Index", "Home");
+            _authService = authService;
         }
 
-        public IActionResult Callback(string token)
+        [HttpGet]
+        public IActionResult Index()
         {
-            var isSuccessful = AuthService.Login(HttpContext, _httpClient, token);
-            if (isSuccessful) {
-                return RedirectToAction("Index", "Announcement");
-            }
-            else
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("Callback")
+            };
+
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Callback()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            if (!result.Succeeded)
             {
                 return RedirectToAction("Index", "Home");
             }
+            await _authService.Login(HttpContext, result);
+            return RedirectToAction("Index", "Announcement");
+        }
+        public IActionResult Logout()
+        {
+            _authService.Logout(HttpContext);
+            return RedirectToAction("Index", "Home");
         }
     }
 }

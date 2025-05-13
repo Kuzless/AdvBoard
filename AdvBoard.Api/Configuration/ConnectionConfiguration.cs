@@ -1,10 +1,9 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication;
 using AdvBoard.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AdvBoard.Api.Configuration
 {
@@ -12,59 +11,28 @@ namespace AdvBoard.Api.Configuration
     {
         public static void ConfigureAuth(WebApplicationBuilder builder)
         {
-            builder.Services.AddAuthentication(opt =>
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
-                opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                opt.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            })
-           .AddCookie(opt =>
-           {
-               opt.Cookie.HttpOnly = true;
-               opt.Cookie.SameSite = SameSiteMode.None;
-               opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-
-           })
-           .AddGoogle(GoogleDefaults.AuthenticationScheme, opt =>
-           {
-               opt.SaveTokens = true;
-               opt.Events.OnCreatingTicket = context =>
-               {
-                   var idToken = context.TokenResponse.Response?.RootElement
-                       .GetProperty("id_token").GetString();
-
-                   if (!string.IsNullOrEmpty(idToken))
-                   {
-                       var tokens = context.Properties.GetTokens().ToList();
-                       tokens.Add(new AuthenticationToken
-                       {
-                           Name = "id_token",
-                           Value = idToken
-                       });
-                       context.Properties.StoreTokens(tokens);
-                   }
-                   return Task.CompletedTask;
-               };
-
-               if (builder.Environment.IsProduction())
-               {
-                   var keyvault = new SecretClient(
-                       new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"),
-                       new DefaultAzureCredential());
-
-                   opt.ClientId = keyvault.GetSecret("GoogleClientId").Value.Value.ToString();
-                   opt.ClientSecret = keyvault.GetSecret("GoogleClientSecret").Value.Value.ToString();
-               }
-               else if (builder.Environment.IsDevelopment())
-               {
-                   opt.ClientId = builder.Configuration["GoogleKeys:ClientId"];
-                   opt.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
-               }
-           });
-            builder.Services.AddAuthorization(options =>
-            {
-                options.AddPolicy("GoogleAuthenticated", policy =>
-                    policy.RequireAuthenticatedUser()
-                          .AddAuthenticationSchemes(GoogleDefaults.AuthenticationScheme));
+                    string key = "";
+                    if (builder.Environment.IsDevelopment()) { 
+                        key = builder.Configuration["JWT:Key"]!;
+                    } else
+                    {
+                        var keyvault = new SecretClient(
+                            new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"),
+                            new DefaultAzureCredential());
+                        key = keyvault.GetSecret("JWTKey").Value.Value.ToString();
+                    }
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["JWT:Issuer"],
+                        ValidAudience = builder.Configuration["JWT:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!))
+                    };
             });
         }
         

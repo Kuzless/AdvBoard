@@ -9,13 +9,13 @@ using AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementStructureQue
 using AdvBoard.Application.DTO.CommandDTOs;
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdvBoard.Api.Controllers
 {
-    [Authorize(AuthenticationSchemes = GoogleDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class AnnouncementController : ControllerBase

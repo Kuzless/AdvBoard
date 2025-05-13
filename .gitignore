@@ -402,3 +402,4 @@ FodyWeavers.xsd
 
 # Development local files
 AdvBoard.Api/appsettings.Development.json
+AdvBoard.MVC/appsettings.Development.json

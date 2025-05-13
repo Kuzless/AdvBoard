@@ -12,10 +12,8 @@ namespace AdvBoard.MVC.Services
         public AnnouncementHttpService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
-            string cookie = httpContextAccessor.HttpContext.Request.Headers.Cookie!;
-            string token = httpContextAccessor.HttpContext.Session.GetString("AccessToken")!;
+            string token = httpContextAccessor.HttpContext.Request.Cookies["AccessToken"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            _httpClient.DefaultRequestHeaders.Add("Cookie", cookie);
         }
 
         public async Task<List<AnnouncementViewModel>> GetAnnouncementsAsync()

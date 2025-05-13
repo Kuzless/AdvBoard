@@ -1,11 +1,9 @@
-﻿using AdvBoard.MVC.Guard;
-using AdvBoard.MVC.Models.Requests;
+﻿using AdvBoard.MVC.Models.Requests;
 using AdvBoard.MVC.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdvBoard.MVC.Controllers
 {
-    [Auth]
     public class AnnouncementController : Controller
     {
         private readonly AnnouncementHttpService _announcementHttpService;

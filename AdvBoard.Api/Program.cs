@@ -34,7 +34,7 @@ namespace AdvBoard.Api
 
             // services
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IJWTService, JWTService>();
             builder.Services.AddAutoMapper(typeof(AutoMappingProfile));
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AddAnnouncementCommand).Assembly));
 
