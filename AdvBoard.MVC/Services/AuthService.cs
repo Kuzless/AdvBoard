@@ -6,17 +6,19 @@ namespace AdvBoard.MVC.Services
     public class AuthService
     {
         private readonly HttpClient _httpClient;
-        public AuthService(HttpClient httpClient)
+        private readonly string _advApi = "/api/Auth/";
+        private readonly IConfiguration _configuration;
+        public AuthService(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _configuration = configuration;
         }
         public async Task Login(HttpContext context, AuthenticateResult result)
         {
             var email = result.Principal.FindFirstValue(ClaimTypes.Email);
             var name = result.Principal.FindFirstValue(ClaimTypes.Name);
             var userId = result.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var response = await _httpClient.PostAsJsonAsync("https://localhost:7007/api/Auth/", new
+            var response = await _httpClient.PostAsJsonAsync(_configuration["APIUrl"] + _advApi, new
             {
                 Email = email,
                 Name = name,
