@@ -5,7 +5,8 @@ using AdvBoard.Application.CQRS.Announcement.Commands.UpdateAnnouncementCommand;
 using AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementByIdQuery;
 using AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementByUserIdQuery;
 using AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementsQuery;
-using AdvBoard.Application.DTO;
+using AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementStructureQuery;
+using AdvBoard.Application.DTO.CommandDTOs;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -32,7 +33,7 @@ namespace AdvBoard.Api.Controllers
         {
             if (adv == null)
             {
-                return BadRequest("Invalid announcement data.");
+                return UnprocessableEntity("Invalid announcement data.");
             }
             
             var command = _mapper.Map<AddAnnouncementCommand>(adv);
@@ -42,24 +43,23 @@ namespace AdvBoard.Api.Controllers
             {
                 return Ok("Announcement added successfully.");
             }
-            return BadRequest("Failed to add announcement.");
+            return UnprocessableEntity("Failed to add announcement.");
         }
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAnnouncement(int id, [FromBody] UpdAdvDTO adv)
+        [HttpPut]
+        public async Task<IActionResult> UpdateAnnouncement([FromBody] UpdAdvDTO adv)
         {
             if (adv == null)
             {
-                return BadRequest("Invalid announcement data.");
+                return UnprocessableEntity("Invalid announcement data.");
             }
             var command = _mapper.Map<UpdateAnnouncementCommand>(adv);
-            command.Id = id;
             command.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
             var result = await _mediator.Send(command);
             if (result)
             {
                 return Ok("Announcement updated successfully.");
             }
-            return BadRequest("Failed to update announcement.");
+            return UnprocessableEntity("Failed to update announcement.");
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAnnouncement(int id)
@@ -71,7 +71,7 @@ namespace AdvBoard.Api.Controllers
             {
                 return Ok("Announcement deleted successfully.");
             }
-            return BadRequest("Failed to delete announcement.");
+            return UnprocessableEntity("Failed to delete announcement.");
         }
         [HttpGet]
         public async Task<IActionResult> GetAnnouncements()
@@ -83,8 +83,20 @@ namespace AdvBoard.Api.Controllers
             }
             return NotFound("Announcement not found.");
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetAnnouncementEditById(int id)
+        [HttpGet("user/")]
+        public async Task<IActionResult> GetAnnouncementByUserId()
+        {
+            var query = new GetAnnouncementByUserIdQuery();
+            query.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+            var result = await _mediator.Send(query);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return NotFound("Announcement not found.");
+        }
+        [HttpGet("user/{id}")]
+        public async Task<IActionResult> GetAnnouncementEditStructureById(int id)
         {
             var result = await _mediator.Send(new GetAnnouncementEditByIdQuery { Id = id });
             if (result != null)
@@ -93,12 +105,10 @@ namespace AdvBoard.Api.Controllers
             }
             return NotFound("Announcement not found.");
         }
-        [HttpGet("user/announcements/")]
-        public async Task<IActionResult> GetAnnouncementByUserId()
+        [HttpGet("user/add")]
+        public async Task<IActionResult> GetAnnouncementStructure()
         {
-            var query = new GetAnnouncementByUserIdQuery();
-            query.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(new GetAnnouncementStructureQuery());
             if (result != null)
             {
                 return Ok(result);

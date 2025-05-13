@@ -1,6 +1,7 @@
 ﻿using AdvBoard.Application.CQRS.Announcement.Commands.AddAnnouncementCommand;
 using AdvBoard.Application.CQRS.Announcement.Commands.UpdateAnnouncementCommand;
-using AdvBoard.Application.DTO;
+using AdvBoard.Application.DTO.CommandDTOs;
+using AdvBoard.Application.DTO.QueryDTOs;
 using AdvBoard.Domain.Entities;
 using AutoMapper;
 

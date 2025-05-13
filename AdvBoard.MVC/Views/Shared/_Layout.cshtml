@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="authorized" content="@Context.Session.GetInt32("Authorized")" />
     <title>@ViewData["Title"] - AdvBoard.MVC</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -10,9 +11,9 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 ps-5 pe-5">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AdvBoard.MVC</a>
+                <a class="navbar-brand fs-3 text-black" asp-area="" asp-controller="Home" asp-action="Index">AdvBoard</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -20,10 +21,18 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Announcement" asp-action="Index">Board</a>
+                            <a class="nav-link text-dark fs-4" id="board" asp-area="" asp-controller="Announcement" asp-action="Index">Оголошення</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Announcement" asp-action="UserAnnouncements">My announcements</a>
+                            <a class="nav-link text-dark fs-4" id="my-board" asp-area="" asp-controller="Announcement" asp-action="UserAnnouncements">Мої оголошення</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item text-end">
+                            <a class="nav-link text-dark fs-4" id="login" asp-area="" asp-controller="Auth" asp-action="Index">Вхід</a>
+                        </li>
+                        <li class="nav-item text-end">
+                            <a class="nav-link text-dark fs-4" id="logout" asp-area="" asp-controller="Auth" asp-action="Logout">Вихід</a>
                         </li>
                     </ul>
                 </div>
@@ -44,6 +53,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/navbar-auth-guard.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

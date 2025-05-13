@@ -1,11 +1,6 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Authentication.Google;
+﻿using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using AdvBoard.Infrastructure;
-using AdvBoard.Domain.Entities;
 using AdvBoard.Application.Interfaces;
 
 namespace AdvBoard.Api.Controllers
@@ -15,9 +10,11 @@ namespace AdvBoard.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
+        private readonly IConfiguration _configuration;
+        public AuthController(IAuthService authService, IConfiguration configuration)
         {
             _authService = authService;
+            _configuration = configuration;
         }
 
         [HttpGet("google-login")]
@@ -35,7 +32,7 @@ namespace AdvBoard.Api.Controllers
         {
             var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
             var token = await _authService.Authenticate(result);
-            return Ok(token);
+            return Redirect($"{_configuration["FrontendUrl"]}/Auth/Callback?token={token}");
         }
     }
 }

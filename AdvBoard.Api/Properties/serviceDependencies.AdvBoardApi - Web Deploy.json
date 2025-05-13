@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "apis1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/AdvBoardApiManager/apis/AdvBoardApi",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/AdvBoardApiMngr/apis/AdvBoardApi",
       "type": "apis.azure"
     }
   }

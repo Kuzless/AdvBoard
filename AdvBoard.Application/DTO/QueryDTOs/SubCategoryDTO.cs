@@ -1,4 +1,4 @@
-﻿namespace AdvBoard.Application.DTO
+﻿namespace AdvBoard.Application.DTO.QueryDTOs
 {
     public class SubCategoryDTO
     {

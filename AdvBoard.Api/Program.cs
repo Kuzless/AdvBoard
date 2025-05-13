@@ -36,23 +36,25 @@ namespace AdvBoard.Api
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddAutoMapper(typeof(AutoMappingProfile));
-            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AddAnnouncementCommand).Assembly));   
+            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AddAnnouncementCommand).Assembly));
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(option =>
+            if (builder.Environment.IsDevelopment())
             {
-                option.SwaggerDoc("v1", new OpenApiInfo { Title = "AdvBoard" });
-                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                builder.Services.AddSwaggerGen(option =>
                 {
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer"
-                });
+                    option.SwaggerDoc("v1", new OpenApiInfo { Title = "AdvBoard" });
+                    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                    {
+                        Name = "Authorization",
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer"
+                    });
 
-                option.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
+                    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
                     {
                         new OpenApiSecurityScheme
                         {
@@ -64,8 +66,13 @@ namespace AdvBoard.Api
                         },
                         new string[]{}
                     }
+                    });
                 });
-            });
+            } else
+            {
+                builder.Services.AddSwaggerGen();
+            }
+
 
             var app = builder.Build();
 

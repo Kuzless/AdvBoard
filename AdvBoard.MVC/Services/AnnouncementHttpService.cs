@@ -1,4 +1,6 @@
-﻿using AdvBoard.MVC.Models.ViewModels;
+﻿using System.Net.Http.Headers;
+using AdvBoard.MVC.Models.Requests;
+using AdvBoard.MVC.Models.ViewModels;
 
 namespace AdvBoard.MVC.Services
 {
@@ -6,9 +8,14 @@ namespace AdvBoard.MVC.Services
     {
         private readonly HttpClient _httpClient;
         private readonly string _advApi = "api/Announcement/";
-        public AnnouncementHttpService(HttpClient httpClient)
+
+        public AnnouncementHttpService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
+            string cookie = httpContextAccessor.HttpContext.Request.Headers.Cookie!;
+            string token = httpContextAccessor.HttpContext.Session.GetString("AccessToken")!;
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _httpClient.DefaultRequestHeaders.Add("Cookie", cookie);
         }
 
         public async Task<List<AnnouncementViewModel>> GetAnnouncementsAsync()
@@ -21,10 +28,19 @@ namespace AdvBoard.MVC.Services
             }
             throw new Exception($"Error fetching data: {response.ReasonPhrase}");
         }
-
-        public async Task<AnnouncementEditViewModel> GetAnnouncementEditByIdAsync(int id)
+        public async Task<List<AnnouncementViewModel>> GetAnnouncementsByUserIdAsync()
         {
-            var response = await _httpClient.GetAsync(_advApi + id);
+            var response = await _httpClient.GetAsync(_advApi + "user/");
+            if (response.IsSuccessStatusCode)
+            {
+                var adv = await response.Content.ReadFromJsonAsync<List<AnnouncementViewModel>>();
+                return adv!;
+            }
+            throw new Exception($"Error fetching data: {response.ReasonPhrase}");
+        }
+        public async Task<AnnouncementEditViewModel> GetAnnouncementEditStructureById(int id)
+        {
+            var response = await _httpClient.GetAsync(_advApi + $"user/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var adv = await response.Content.ReadFromJsonAsync<AnnouncementEditViewModel>();
@@ -33,13 +49,42 @@ namespace AdvBoard.MVC.Services
             throw new Exception($"Error fetching data: {response.ReasonPhrase}");
         }
 
-        public async Task<List<AnnouncementViewModel>> GetAnnouncementsByUserIdAsync()
+        public async Task<bool> EditAnnouncementAsync(EditAnnouncementRequest request)
         {
-            var response = await _httpClient.GetAsync(_advApi + "user/announcements/");
+            var response = await _httpClient.PutAsJsonAsync(_advApi, request);
             if (response.IsSuccessStatusCode)
             {
-                var adv = await response.Content.ReadFromJsonAsync<List<AnnouncementViewModel>>();
+                return true;
+            }
+            throw new Exception($"Error fetching data: {response.ReasonPhrase}");
+        }
+
+        public async Task<bool> DeleteAnnouncementAsync(int id)
+        {
+            var response = await _httpClient.DeleteAsync(_advApi + id);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            throw new Exception($"Error fetching data: {response.ReasonPhrase}");
+        }
+        public async Task<AnnouncementAddViewModel> GetAnnouncementStructure()
+        {
+            var response = await _httpClient.GetAsync(_advApi + "user/add");
+            if (response.IsSuccessStatusCode)
+            {
+                var adv = await response.Content.ReadFromJsonAsync<AnnouncementAddViewModel>();
                 return adv!;
+            }
+            throw new Exception($"Error fetching data: {response.ReasonPhrase}");
+        }
+
+        public async Task<bool> AddAnnouncementAsync(AnnouncementAddRequest request)
+        {
+            var response = await _httpClient.PostAsJsonAsync(_advApi, request);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
             }
             throw new Exception($"Error fetching data: {response.ReasonPhrase}");
         }

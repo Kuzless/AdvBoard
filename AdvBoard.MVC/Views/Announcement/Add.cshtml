@@ -1,18 +1,11 @@
 ﻿@using AdvBoard.MVC.Models.ViewModels
-@model AnnouncementEditViewModel
+@model AnnouncementAddViewModel
 
 <form method="post" class="form-control">
 	<h4 class="form-label">Назва оголошення:</h4>
-	<input class="input-group" asp-for="Title" value="@Model.Title" required/>
+	<input class="input-group" asp-for="Title" required />
 	<h4 class="form-label">Опис оголошення:</h4>
-	<input class="input-group" asp-for="Description" value="@Model.Description" required />
-	<h4 class="form-label">Статус оголошення:</h4>
-	<select class="form-select mb-3" asp-for="StatusId">
-		@foreach (var status in Model.Statuses)
-		{
-			<option value="@status.Id">@status.Name</option>
-		}
-	</select>
+	<input class="input-group" asp-for="Description" required />
 	<h4 class="form-label">Категорія:</h4>
 	<select class="form-select mb-3" asp-for="CategoryId" onchange="popSubCategories()">
 		@foreach (var category in Model.Categories)
@@ -25,11 +18,10 @@
 		@foreach (var sub in Model.SubCategories)
 		{
 			<option value="@sub.Id">@sub.Name</option>
-		}	
+		}
 	</select>
-	<button type="submit" class="btn btn-dark" asp-action="Edit">Зберегти</button>
+	<button type="submit" class="btn btn-dark" asp-action="Add">Створити</button>
 	<input type="hidden" id="SubCategoryData" value='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SubCategories))' />
 </form>
 
 <script src="/js/cascading-dropdown.js"></script>
-

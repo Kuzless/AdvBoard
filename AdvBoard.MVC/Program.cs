@@ -11,10 +11,12 @@ namespace AdvBoard.MVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddHttpClient<AnnouncementHttpService>("HttpClient", client =>
+            builder.Services.AddHttpClient<AnnouncementHttpService>(client =>
             {
                 client.BaseAddress = new Uri(builder.Configuration["APIUrl"]!);
             });
+            builder.Services.AddSession();
+            builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
 
@@ -30,6 +32,7 @@ namespace AdvBoard.MVC
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession();
 
             app.UseAuthorization();
 

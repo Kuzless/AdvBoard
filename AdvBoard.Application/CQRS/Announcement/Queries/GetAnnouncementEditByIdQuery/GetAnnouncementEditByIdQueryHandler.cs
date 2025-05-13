@@ -1,4 +1,4 @@
-﻿using AdvBoard.Application.DTO;
+﻿using AdvBoard.Application.DTO.QueryDTOs;
 using AdvBoard.Domain.Interfaces;
 using AutoMapper;
 using MediatR;

@@ -1,4 +1,4 @@
-﻿using AdvBoard.Application.DTO;
+﻿using AdvBoard.Application.DTO.QueryDTOs;
 using MediatR;
 
 namespace AdvBoard.Application.CQRS.Announcement.Queries.GetAnnouncementByIdQuery

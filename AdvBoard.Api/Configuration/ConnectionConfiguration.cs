@@ -17,7 +17,13 @@ namespace AdvBoard.Api.Configuration
                 opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
             })
-           .AddCookie()
+           .AddCookie(opt =>
+           {
+               opt.Cookie.HttpOnly = true;
+               opt.Cookie.SameSite = SameSiteMode.None;
+               opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
+           })
            .AddGoogle(GoogleDefaults.AuthenticationScheme, opt =>
            {
                opt.SaveTokens = true;

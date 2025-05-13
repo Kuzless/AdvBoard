@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using AdvBoard.Application.DTO;
 using AdvBoard.Application.Interfaces;
 using AdvBoard.Domain.Entities;
 using AdvBoard.Domain.Interfaces;
@@ -15,7 +14,7 @@ namespace AdvBoard.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<TokenDTO> Authenticate(AuthenticateResult authResult)
+        public async Task<string> Authenticate(AuthenticateResult authResult)
         {
             var claims = authResult.Principal?.Identities.FirstOrDefault()?.Claims;
             var token = authResult.Properties?.GetTokenValue("id_token");
@@ -40,7 +39,7 @@ namespace AdvBoard.Application.Services
             }
             await _unitOfWork.SaveAsync();
             
-            return new TokenDTO() { AccessToken = token };
+            return token;
         }
     }
 }
