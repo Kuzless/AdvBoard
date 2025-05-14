@@ -47,7 +47,13 @@ namespace AdvBoard.Api.Configuration
                         new Uri($"https://{builder.Configuration["KeyVault:KeyVaultName"]}.vault.azure.net/"),
                         new DefaultAzureCredential());
 
-                    options.UseSqlServer(keyvault.GetSecret(builder.Configuration["KeyVault:Database"]).Value.Value.ToString());
+                    options.UseSqlServer(keyvault.GetSecret(builder.Configuration["KeyVault:Database"]).Value.Value.ToString(), opt =>
+                    {
+                        opt.EnableRetryOnFailure(
+                            maxRetryCount: 10,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null);
+                    });
                 }
                 else if (builder.Environment.IsDevelopment())
                 {
