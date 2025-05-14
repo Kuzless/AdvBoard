@@ -13,17 +13,18 @@ namespace AdvBoard.Api.Configuration
         {
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
-                    string key = "";
-                    if (builder.Environment.IsDevelopment()) { 
-                        key = builder.Configuration["JWT:Key"]!;
-                    } else
-                    {
-                        var keyvault = new SecretClient(
-                            new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"),
-                            new DefaultAzureCredential());
-                        key = keyvault.GetSecret("JWTKey").Value.Value.ToString();
-                    }
-                    options.TokenValidationParameters = new TokenValidationParameters
+                string key = "";
+                if (builder.Environment.IsDevelopment()) { 
+                    key = builder.Configuration["JWT:Key"]!;
+                } else
+                {
+                    var keyvault = new SecretClient(
+                        new Uri($"https://{builder.Configuration["KeyVault:KeyVaultName"]}.vault.azure.net/"),
+                        new DefaultAzureCredential());
+                    key = keyvault.GetSecret(builder.Configuration["KeyVault:Key"]).Value.Value.ToString();
+                }
+
+                options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
@@ -31,7 +32,7 @@ namespace AdvBoard.Api.Configuration
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = builder.Configuration["JWT:Issuer"],
                         ValidAudience = builder.Configuration["JWT:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!))
+                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(key))
                     };
             });
         }
@@ -43,10 +44,10 @@ namespace AdvBoard.Api.Configuration
                 if (builder.Environment.IsProduction())
                 {
                     var keyvault = new SecretClient(
-                        new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"),
+                        new Uri($"https://{builder.Configuration["KeyVault:KeyVaultName"]}.vault.azure.net/"),
                         new DefaultAzureCredential());
 
-                    options.UseSqlServer(keyvault.GetSecret("DatabaseConStr").Value.Value.ToString());
+                    options.UseSqlServer(keyvault.GetSecret(builder.Configuration["KeyVault:Database"]).Value.Value.ToString());
                 }
                 else if (builder.Environment.IsDevelopment())
                 {

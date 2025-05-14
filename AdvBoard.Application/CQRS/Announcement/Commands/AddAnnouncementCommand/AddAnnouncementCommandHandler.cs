@@ -21,7 +21,7 @@ namespace AdvBoard.Application.CQRS.Announcement.Commands.AddAnnouncementCommand
             try
             {
                 var adv = _mapper.Map<Domain.Entities.Announcement>(request);
-                adv.CreatedAt = DateTime.Now;
+                adv.CreatedAt = DateTime.Now.ToLocalTime();
                 adv.StatusId = 1;
                 await _unitOfWork.AnnouncementRepository.AddAsync(adv);
                 await _unitOfWork.SaveAsync();

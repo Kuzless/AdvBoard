@@ -29,20 +29,20 @@ namespace AdvBoard.MVC
             .AddGoogle(options =>
             {
                 if (builder.Environment.IsDevelopment())
-                {
-                    options.ClientId = builder.Configuration["GoogleKeys:ClientId"];
-                    options.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
-                } else
-                {
-                    var keyvault = new SecretClient(
-                        new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"),
-                        new DefaultAzureCredential());
+                 {
+                     options.ClientId = builder.Configuration["GoogleKeys:ClientId"];
+                     options.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
+                 } else
+                 {
+                     var keyvault = new SecretClient(
+                         new Uri($"https://{builder.Configuration["KeyVault:KeyVaultName"]}.vault.azure.net/"),
+                         new DefaultAzureCredential());
 
-                    options.ClientId = keyvault.GetSecret("GoogleClientId").Value.Value.ToString();
-                    options.ClientSecret = keyvault.GetSecret("GoogleClientSecret").Value.Value.ToString();
-                }
+                     options.ClientId = keyvault.GetSecret(builder.Configuration["KeyVault:ClientId"]).Value.Value.ToString();
+                     options.ClientSecret = keyvault.GetSecret(builder.Configuration["KeyVault:ClientSecret"]).Value.Value.ToString();
+                 }
 
-                    options.SaveTokens = true;
+                options.SaveTokens = true;
                 options.Events.OnCreatingTicket = context =>
                 {
                     var idToken = context.TokenResponse.Response?.RootElement

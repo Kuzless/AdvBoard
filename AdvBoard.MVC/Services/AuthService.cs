@@ -42,6 +42,7 @@ namespace AdvBoard.MVC.Services
         public void Logout(HttpContext context)
         {
             context.Session.Remove("Authorized");
+            context.Response.Cookies.Delete("AccessToken");
         }
     }
 }
